@@ -1,0 +1,36 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Album Collector</title>
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"> -->
+    <link rel="stylesheet" href="https://unpkg.com/tachyons@4.12.0/css/tachyons.min.css"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header class='navbar'>
+        <nav class="dt w-100 border-box pa3 ph5-ns bg-dark-blue">
+            <a class="dtc v-mid white link dim w-25" href="/" title="Home">
+              <img src="https://www.vippng.com/png/detail/34-349943_compact-disc-clipart-music-album-vector-cd-logo.png" class="dib w2 h2 br-100" alt="Site Name">
+            </a>
+            <div class="dtc v-mid w-75 tr">
+              <a class="link dim white f6 f5-ns dib mr3 mr4-ns" href="{% url 'about' %}" title="About">About</a>
+              <a class="link dim white f6 f5-ns dib mr3 mr4-ns" href="{% url 'albums_create' %}" title="Create">Add an Album</a>
+              <a class="link dim white f6 f5-ns dib" href="{% url 'index' %}" title="Albums">View All Albums</a>
+            </div>
+          </nav>
+    </header>
+    <main class="container">
+        {% block content %}
+        {% endblock %}
+    </main>
+    <footer class="pv4 ph3 ph5-m ph6-l mid-gray bg-dark-blue">
+        <div class="tc mt3">
+            <small class="f6 db tc white">© 2020 <b class="ttu">Album Collector</b>., All Rights Reserved</small>
+        </div>
+      </footer>
+</body>
+</html>
