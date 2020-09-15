@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView
 
-from .models import Album
+from .models import Album, Instrument
 
 
 # Create your views here.
@@ -38,3 +39,26 @@ class AlbumUpdate(UpdateView):
 class AlbumDelete(DeleteView):
     model = Album
     success_url = '/albums/'
+
+
+class InstrumentList(ListView):
+    model = Instrument
+
+
+class InstrumentDetail(DetailView):
+    model = Instrument
+
+
+class InstrumentCreate(CreateView):
+    model = Instrument
+    fields = '__all__'
+
+
+class InstrumentUpdate(UpdateView):
+    model = Instrument
+    fields = '__all__'
+
+
+class InstrumentDelete(DeleteView):
+    model = Instrument
+    success_url = '/instruments/'

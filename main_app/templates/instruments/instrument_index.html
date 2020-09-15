@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Instrument List</h1>
+
+{% for instrument in instrument_list %}
+<div>
+    <a href="{% url 'instruments_detail' instrument.id %}">
+        <div class="content">
+            <article class="center mw5 mw6-ns br3 hidden ba b--black-10 mv4">
+                <h1 class="f4 bg-near-white br3 br--top black-60 mv0 pv2 ph3">{{ instrument.name }}</h1>
+                <div class="pa3 bt b--black-10">
+                <p class="f6 f5-ns lh-copy measure">Color: {{ instrument.color }}</p>
+                <p class="f6 f5-ns lh-copy measure">Type: {{ instrument.sound }}</p>
+                </div>
+            </article>
+        </div>
+    </a>
+</div>
+{% endfor %}
+
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Delete Instrument</h1>
+
+    <h4>Are you sure you want to delete the instrument <span class="dark-blue">{{ object.name }}?</h4>
+
+    <form action="" method="POST">
+        {% csrf_token %}
+        <input type="submit" value="Confirm to Delete" class="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-red">
+        <a href="{% url 'instruments_detail' object.id %}" class="f6 grow no-underline br-pill ba ph3 pv2 mb2 dib black">Cancel</a>
+    </form>
+{% endblock %}
