@@ -12,7 +12,7 @@ urlpatterns = [
     path('albums/<int:pk>/delete/',
          views.AlbumDelete.as_view(), name='albums_delete'),
     path('instruments/', views.InstrumentList.as_view(), name='instruments_index'),
-    path('instruments/<int:instrument_id>/',
+    path('instruments/<int:pk>/',
          views.InstrumentDetail.as_view(), name='instruments_detail'),
     path('instruments/create/', views.InstrumentCreate.as_view(),
          name='instruments_create'),
