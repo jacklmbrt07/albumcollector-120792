@@ -21,8 +21,93 @@
                     <a class="f4 fw6 db green no-underline underline-hover" href="{% url 'albums_update' album.id %}">Edit</a>
                     <a class="f4 fw6 db red no-underline underline-hover" href="{% url 'albums_delete' album.id %}">Delete</a>
                 </div>
+                
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    {{ listen_form.as_p }}
+                    <input type="submit" value="Add Listen" class="f6 grow no-underline br-pill ba ph3 pv2 mb2 dib dark-blue">
+                </form>
+                
+                <br>
+                {% if album.listened_today %}
+                <div>{{album.name}} has been listened to today</div>
+                {% else %}
+                <div>{{album.name}} has not been listened to today</div>
+                {% endif %}
+                
+                <div class="pa4">
+                    <div class="overflow-auto">
+                        <h4>Listen Log</h4>
+                        <table class="f6 w-100 mw8 center" cellspacing="0">
+                            <thead>
+                                <tr class="stripe-dark">
+                                    <th class="fw6 tl pa3 bg-white">Method</th>
+                                    <th class="fw6 tl pa3 bg-white">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody class="lh-copy">
+                                {% for listen in album.listen_set.all %}
+                                <tr class="stripe-dark">
+                                    <td class="pa3">{{ listen.get_method_display }}</td>
+                                    <td class="pa3">{{ listen.date }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                  <hr>
+                  <div class="row">
+                      <div>
+                          <h3>{{ album.name }}'s Instruments</h3>
+                          {% if album.instruments.count %}
+                            {% for instrument in album.instruments.all %}
+                            <article class="center mw5 mw6-ns br3 hidden ba b--black-10 mv4">
+                                <div class="pa3 bt b--black-10">
+                                  <p class="f6 f5-ns lh-copy measure">
+                                      A <span style="color: {{ instrument.color }}">{{ instrument.color }}</span> {{ instrument.name }}
+                                  </p>
+                                  <p class="f6 f5-ns lh-copy measure"><em>{{ instrument.get_sound_display }}</em></p>
+                                </div>
+                                <form action="{% url 'unassoc_instrument' album.id instrument.id %}" method="POST">
+                                    {% csrf_token %}
+                                    <button class="f6 link dim ba bw2 ph3 pv2 mb2 dib red" type="submit">Delete</button>
+                                </form>
+                            </article>
+                            {% endfor %}
+                        {% else %}
+                        <h5>No Instruments added.</h5>
+                        {% endif %}
+                      </div>
+                  </div>
+                </article>
 
-            </article>
+                  <div>
+                      <h3>Available Instruments</h3>
+                      {% if instruments.count %}
+                      {% for instrument in instruments.all %}
+                      <article class="center mw5 mw6-ns br3 hidden ba b--black-10 mv4">
+                        <div class="pa3 bt b--black-10">
+                          <p class="f6 f5-ns lh-copy measure">
+                              A <span style="color: {{ instrument.color }}">{{ instrument.color }}</span> {{ instrument.name }}
+                          </p>
+                          <p class="f6 f5-ns lh-copy measure"><em>{{ instrument.get_sound_display }}</em></p>
+                        </div>
+                    </article>
+                    <div>
+                        <form action="{% url 'assoc_instrument' album.id instrument.id %}" method="POST">
+                            {% csrf_token %}
+                            <button class="f6 link dim ba bw2 ph3 pv2 mb2 dib near-black" type="submit">Add</button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <h5>{{album.name}} Already has all instruments Available</h5>
+                {% endif %}
+                    
+
         </div>
 </div>
 

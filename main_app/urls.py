@@ -20,4 +20,10 @@ urlpatterns = [
          views.InstrumentUpdate.as_view(), name='instruments_update'),
     path('instruments/<int:pk>/delete/',
          views.InstrumentDelete.as_view(), name='instruments_delete'),
+    path('albums/<int:album_id>/add_listen/',
+         views.add_listen, name='add_listen'),
+    path('albums/<int:album_id>/assoc_instrument/<int:instrument_id>/',
+         views.assoc_instrument, name='assoc_instrument'),
+    path('albums/<int:album_id>/unassoc_instrument/<int:instrument_id>/',
+         views.unassoc_instrument, name='unassoc_instrument')
 ]
