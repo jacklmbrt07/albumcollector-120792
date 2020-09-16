@@ -2,11 +2,32 @@ from django.shortcuts import render, redirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
 
-from .models import Album, Instrument
+import uuid
+import boto3
+
+from .models import Album, Instrument, Photo
 from .forms import ListenForm
+
+S3_BASE_URL = 'https://s3-us-west-1.amazonaws.com/'
+BUCKET = 'albumcollector-120792'
 
 
 # Create your views here.
+class AlbumCreate(CreateView):
+    model = Album
+    fields = '__all__'
+    success_url = '/albums/'
+
+
+class AlbumUpdate(UpdateView):
+    model = Album
+    fields = '__all__'
+
+
+class AlbumDelete(DeleteView):
+    model = Album
+    success_url = '/albums/'
+
 
 def home(request):
     return render(request, 'home.html')
@@ -38,6 +59,23 @@ def add_listen(request, album_id):
     return redirect('detail', album_id=album_id)
 
 
+def add_photo(request, album_id):
+    photo_file = request.FILES.get('photo-file', None)
+    if photo_file:
+        s3 = boto3.client('s3')
+        key = uuid.uuid4().hex[:6] + \
+            photo_file.name[photo_file.name.rfind('.'):]
+        try:
+            s3.upload_fileobj(photo_file, BUCKET, key)
+            url = f"{S3_BASE_URL}{BUCKET}/{key}"
+            photo = Photo(url=url, album_id=album_id)
+            photo.save()
+        except:
+            print('An error occurred uploading file to S3')
+
+    return redirect('detail', album_id=album_id)
+
+
 def assoc_instrument(request, album_id, instrument_id):
     Album.objects.get(id=album_id).instruments.add(instrument_id)
     return redirect('detail', album_id=album_id)
@@ -46,22 +84,6 @@ def assoc_instrument(request, album_id, instrument_id):
 def unassoc_instrument(request, album_id, instrument_id):
     Album.objects.get(id=album_id).instruments.remove(instrument_id)
     return redirect('detail', album_id=album_id)
-
-
-class AlbumCreate(CreateView):
-    model = Album
-    fields = '__all__'
-    success_url = '/albums/'
-
-
-class AlbumUpdate(UpdateView):
-    model = Album
-    fields = '__all__'
-
-
-class AlbumDelete(DeleteView):
-    model = Album
-    success_url = '/albums/'
 
 
 class InstrumentList(ListView):

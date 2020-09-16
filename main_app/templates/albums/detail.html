@@ -6,6 +6,21 @@
 <div>
         <div class="content">
             <article class="center mw5 mw6-ns br3 hidden ba b--black-10 mv4">
+                
+                {% for photo in album.photo_set.all %}
+                <img src="{{ photo.url }}" alt="">
+                <!-- <img src="{{photo.url}}" class="db w-100 br2 br--top"> -->
+                {% empty %}
+                <div>No Photos uploaded</div>
+                {% endfor %}
+
+                <form action="{% url 'add_photo' album.id %}" enctype="multipart/form-data" method="POST" class="pa3 bt b--black-10">
+                    {% csrf_token %}
+                    <input type="file" name="photo_file">
+                    <br><br>
+                    <input type="submit" value="Upload Cover" class="f6 grow no-underline br-pill ba ph3 pv2 mb2 dib dark-blue">
+                </form>
+
                 <h1 class="f4 bg-near-white br3 br--top black-60 mv0 pv2 ph3">{{ album.name }}</h1>
                 <div class="pa3 bt b--black-10">
                 <p class="f6 f5-ns lh-copy measure">Band: {{ album.band }}</p>

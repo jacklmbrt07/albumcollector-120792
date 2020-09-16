@@ -25,5 +25,7 @@ urlpatterns = [
     path('albums/<int:album_id>/assoc_instrument/<int:instrument_id>/',
          views.assoc_instrument, name='assoc_instrument'),
     path('albums/<int:album_id>/unassoc_instrument/<int:instrument_id>/',
-         views.unassoc_instrument, name='unassoc_instrument')
+         views.unassoc_instrument, name='unassoc_instrument'),
+    path('albums/<int:album_id>/add_photo/',
+         views.add_photo, name='add_photo'),
 ]
