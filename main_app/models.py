@@ -10,6 +10,9 @@ METHODS = (
     ('3', 'In a Video')
 )
 
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    favorite_color = models.CharField(max_length=50)
 
 class Instrument(models.Model):
     INSTRUMENT_TYPES = (

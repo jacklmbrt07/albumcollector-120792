@@ -29,4 +29,5 @@ urlpatterns = [
          views.unassoc_instrument, name='unassoc_instrument'),
     path('albums/<int:album_id>/add_photo/',
          views.add_photo, name='add_photo'),
+     path('accounts/signup/', views.signup, name='signup')
 ]

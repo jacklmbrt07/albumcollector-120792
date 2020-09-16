@@ -1,6 +1,10 @@
 from django.shortcuts import render, redirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
+from django.contrib.auth import login
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 import uuid
 import boto3
@@ -13,7 +17,7 @@ BUCKET = 'albumcollector-120792'
 
 
 # Create your views here.
-class AlbumCreate(CreateView):
+class AlbumCreate(LoginRequiredMixin, CreateView):
     model = Album
     fields = '__all__'
 
@@ -22,12 +26,12 @@ class AlbumCreate(CreateView):
         return super().form_valid(form)
 
 
-class AlbumUpdate(UpdateView):
+class AlbumUpdate(LoginRequiredMixin, UpdateView):
     model = Album
     fields = '__all__'
 
 
-class AlbumDelete(DeleteView):
+class AlbumDelete(LoginRequiredMixin, DeleteView):
     model = Album
     success_url = '/albums/'
 
@@ -40,11 +44,13 @@ def about(request):
     return render(request, 'about.html')
 
 
+@login_required
 def albums_index(request):
-    albums = Album.objects.all()
+    albums = Album.objects.filter(user=request.user)
     return render(request, 'albums/index.html', {'albums': albums})
 
 
+@login_required
 def albums_detail(request, album_id):
     album = Album.objects.get(id=album_id)
     instruments_album_doesnt_have = Instrument.objects.exclude(
@@ -53,6 +59,7 @@ def albums_detail(request, album_id):
     return render(request, 'albums/detail.html', {'album': album, 'listen_form': listen_form, 'instruments': instruments_album_doesnt_have})
 
 
+@login_required
 def add_listen(request, album_id):
     form = ListenForm(request.POST)
     if form.is_valid():
@@ -62,6 +69,7 @@ def add_listen(request, album_id):
     return redirect('detail', album_id=album_id)
 
 
+@login_required
 def add_photo(request, album_id):
     photo_file = request.FILES.get('photo-file', None)
     if photo_file:
@@ -79,34 +87,51 @@ def add_photo(request, album_id):
     return redirect('detail', album_id=album_id)
 
 
+@login_required
 def assoc_instrument(request, album_id, instrument_id):
     Album.objects.get(id=album_id).instruments.add(instrument_id)
     return redirect('detail', album_id=album_id)
 
 
+@login_required
 def unassoc_instrument(request, album_id, instrument_id):
     Album.objects.get(id=album_id).instruments.remove(instrument_id)
     return redirect('detail', album_id=album_id)
 
 
-class InstrumentList(ListView):
+def signup(request):
+    error_message = ''
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('index')
+        else:
+            error_message = 'Invalid Signup - try again'
+    form = UserCreationForm()
+    context = {'form': form, 'error_message': error_message}
+    return render(request, 'registration/signup.html', context)
+
+
+class InstrumentList(LoginRequiredMixin, ListView):
     model = Instrument
 
 
-class InstrumentDetail(DetailView):
+class InstrumentDetail(LoginRequiredMixin, DetailView):
     model = Instrument
 
 
-class InstrumentCreate(CreateView):
+class InstrumentCreate(LoginRequiredMixin, CreateView):
     model = Instrument
     fields = '__all__'
 
 
-class InstrumentUpdate(UpdateView):
+class InstrumentUpdate(LoginRequiredMixin, UpdateView):
     model = Instrument
     fields = '__all__'
 
 
-class InstrumentDelete(DeleteView):
+class InstrumentDelete(LoginRequiredMixin, DeleteView):
     model = Instrument
     success_url = '/instruments/'
