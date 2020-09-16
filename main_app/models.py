@@ -1,7 +1,7 @@
 from django.db import models
 from django.urls import reverse
-
 from datetime import date
+from django.contrib.auth.models import User
 
 # Create your models here.
 METHODS = (
@@ -9,6 +9,7 @@ METHODS = (
     ('2', 'With Headphones'),
     ('3', 'In a Video')
 )
+
 
 class Instrument(models.Model):
     INSTRUMENT_TYPES = (
@@ -34,16 +35,15 @@ class Album(models.Model):
     band = models.CharField(max_length=100)
     description = models.TextField(max_length=250)
     year = models.IntegerField()
-
-    # M:M relationship
     instruments = models.ManyToManyField(Instrument)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
 
     def get_absolute_url(self):
         return reverse('detail', kwargs={'album_id': self.id})
-    
+
     def listened_today(self):
         return self.listen_set.filter(date=date.today()).count() >= 0
 
@@ -60,10 +60,10 @@ class Listen(models.Model):
     class Meta:
         ordering = ['-date']
 
+
 class Photo(models.Model):
     url = models.CharField(max_length=200)
     album = models.ForeignKey(Album, on_delete=models.CASCADE)
 
     def __str__(self):
         return f'Album Cover for: {self.album_id} @{self.url}'
-

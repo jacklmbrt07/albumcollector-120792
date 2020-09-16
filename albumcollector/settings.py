@@ -127,6 +127,8 @@ STATICFILES_DIRS = [
     '/var/www/static/',
 ]
 
+LOGIN_REDIRECT_URL = '/albums/'
+LOGOUT_REDIRECT_URL = '/'
 
 # Settings for production only -- uncomment before deploying to heroku
 django_heroku.settings(locals())
